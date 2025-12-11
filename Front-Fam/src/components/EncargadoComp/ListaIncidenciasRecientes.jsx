@@ -64,7 +64,7 @@ const ListaIncidenciasRecientes = () => {
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? incidencias.length - maxVisibleItems : prevIndex - 1
+      prevIndex === 0 ? Math.max(0, incidencias.length - maxVisibleItems) : prevIndex - 1
     );
   };
 
@@ -105,31 +105,51 @@ const ListaIncidenciasRecientes = () => {
 
   const visibleIncidencias = incidencias.slice(currentIndex, currentIndex + maxVisibleItems);
 
-  if (error) return <p className="error">Error al cargar incidencias: {error}</p>;
-  if (incidencias.length === 0) return <p className="info">No hay incidencias recientes.</p>;
-
+  // -- CAMBIO: siempre renderizar el contenedor principal; mostrar mensajes internos --
   return (
     <div className="recientes-container">
       <h2 className="recientes-title">Incidencias Recientes</h2>
 
       <div className="recientes-carrusel">
-        <button onClick={prevSlide} className="recientes-carrusel-button prev">〈</button>
+        <button
+          onClick={prevSlide}
+          className="recientes-carrusel-button prev"
+          disabled={incidencias.length === 0}
+        >
+          〈
+        </button>
 
         <div className="recientes-grid">
-          {visibleIncidencias.map((incidencia) => (
-            <div
-              key={incidencia.id}
-              className="reciente-card"
-              onClick={() => handleIncidenciaClick(incidencia)}
-            >
-              <strong>{incidencia.tipo.split(" ")[0]}</strong>
-              <span>{incidencia.tipo.split(" ")[1] || ''}</span>
-              <small>{new Date(incidencia.fecha).toLocaleDateString()}</small>
+          {error ? (
+            <div className="reciente-card empty">
+              <p className="error">Error al cargar incidencias: {error}</p>
             </div>
-          ))}
+          ) : incidencias.length === 0 ? (
+            <div className="reciente-card empty">
+              <p className="info">No hay incidencias recientes.</p>
+            </div>
+          ) : (
+            visibleIncidencias.map((incidencia) => (
+              <div
+                key={incidencia.id}
+                className="reciente-card"
+                onClick={() => handleIncidenciaClick(incidencia)}
+              >
+                <strong>{incidencia.tipo.split(" ")[0]}</strong>
+                <span>{incidencia.tipo.split(" ")[1] || ''}</span>
+                <small>{new Date(incidencia.fecha).toLocaleDateString()}</small>
+              </div>
+            ))
+          )}
         </div>
 
-        <button onClick={nextSlide} className="recientes-carrusel-button next">〉</button>
+        <button
+          onClick={nextSlide}
+          className="recientes-carrusel-button next"
+          disabled={incidencias.length === 0}
+        >
+          〉
+        </button>
       </div>
 
       {incidenciaSeleccionada && (

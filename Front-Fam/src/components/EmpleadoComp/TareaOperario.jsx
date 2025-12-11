@@ -27,7 +27,7 @@ const TareaOperario = ({ taskStarted, onStart, onEnd, onTiempoFinalizado }) => {
       if (!response.ok) throw new Error('Error al obtener las tareas');
 
       const dataTarea = await response.json();
-
+console.log('Datos de tareas recibidos:', dataTarea);
       if (dataTarea.length === 0) {
         setTareas([]);
         console.warn('No hay tareas pendientes para el usuario.');
@@ -44,9 +44,9 @@ const TareaOperario = ({ taskStarted, onStart, onEnd, onTiempoFinalizado }) => {
   useEffect(() => {
     fetchTareas();
   }, []);
-
   const tareaPendiente = tareas.find(t => t.estadoProducto === 'asignado' || t.estadoProducto === 'produccion');
-
+console.log('Tarea pendiente actual:', tareaPendiente);
+console.log('cantidad:', tareaPendiente?.cantidadProducto)
   // Cargar segundos desde la tarea al montar
   useEffect(() => {
     if (!tareaPendiente) return;
@@ -87,6 +87,22 @@ const TareaOperario = ({ taskStarted, onStart, onEnd, onTiempoFinalizado }) => {
     const m = String(Math.floor(secs / 60)).padStart(2, '0');
     const s = String(secs % 60).padStart(2, '0');
     return `${m}:${s}`;
+  };
+
+    // Función para convertir "HH:MM:SS" a segundos
+  const timeStringToSeconds = (timeStr) => {
+    if (!timeStr || typeof timeStr !== 'string') return 0;
+    const [h, m, s] = timeStr.split(':').map(Number);
+    return h * 3600 + m * 60 + s;
+  };
+
+  // Función para formatear segundos a "HH:MM:SS"
+  const formatTimeTotal = (totalSeconds) => {
+    if (isNaN(totalSeconds) || totalSeconds <= 0) return 'N/D';
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   };
 
   const handleStartClick = async () => {
@@ -188,7 +204,9 @@ console.log('Finalizando tarea con segundos:', tareaPendiente, seconds);
 
         <div className="timer-estimado">
           <span className="timer-label">Tiempo estimado:</span>
-          <span className="timer-value">{tareaPendiente?.tiempoProduccionEstimado || 'N/D'}</span>
+          <span className="timer-value">
+            {tareaPendiente ? formatTimeTotal(timeStringToSeconds(tareaPendiente.tiempoProduccionEstimado) * tareaPendiente.cantidadProducto) : 'N/D'}
+            </span>
         </div>
 
         <button

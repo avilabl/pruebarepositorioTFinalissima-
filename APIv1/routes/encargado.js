@@ -43,11 +43,13 @@ app.get('/empleados', verify_token, authorize_roles(2), async function (req, res
 
   try {
     const [rows] = await pool.query(`SELECT
-    empleados.idEmpleado,empleados.nombreEmpleado,empleados.apellidoEmpleado
+    empleados.idEmpleado,empleados.nombreEmpleado,empleados.apellidoEmpleado,usuarios.idRol
   FROM
     empleados
+  JOIN
+    usuarios ON usuarios.idEmpleado = empleados.idEmpleado
   WHERE
-	  empleados.estadoEmpleado = 0 AND empleados.bajaEmpleado = 0
+	  empleados.estadoEmpleado = 0 AND empleados.bajaEmpleado = 0 AND usuarios.idRol = 4
 `);
     res.json(rows);
   } catch (err) {
@@ -193,6 +195,11 @@ app.post('/incidencia', verify_token, authorize_roles(2), async function (req, r
        VALUES (?, ?, ?, ?, ?)`,
       [idProceso, descripcion, idTipoIncidencia, new Date(), '1']
     );
+    console.log("descrepcion", descripcion);
+    console.log("idTipoIncidencia", idTipoIncidencia);
+    console.log("idProceso", idProceso);
+    
+
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -1,40 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
+import { useProductoSeleccionado } from './contextProducto';
 import './CargarTarea.css';
 
 function CargarTarea() {
-  // Estados para formulario
-  const [productos, setProductos] = useState([]);
+  const { productos, setProductos } = useProductoSeleccionado();
+
   const [productoSeleccionado, setProductoSeleccionado] = useState('');
   const [cantidad, setCantidad] = useState('');
   const [fechaEntrega, setFechaEntrega] = useState('');
-  const token = localStorage.getItem('token'); 
-
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
-    if (!token) {
-      console.error('Token no encontrado');
-      return;
-    }
-
-    
     fetch("http://localhost:3000/oficina/producto", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then(res => res.json())
-      .then(data => {
-        if (data.status === false) {
-          alert(`Error: ${data.message}`);
-          return;
-        }
-        setProductos(data); 
-      })
+      .then(data => setProductos(data))
       .catch(err => console.error('Error al cargar productos:', err));
-  }, []);
+  }, [setProductos]);
 
-  
   const handleCantidadChange = (e) => {
     const value = e.target.value;
     if (/^\d{0,4}$/.test(value)) {
@@ -42,11 +29,8 @@ function CargarTarea() {
     }
   };
 
-  // Manejador de envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validaciones básicas
     if (!productoSeleccionado || !cantidad || !fechaEntrega) {
       alert('Todos los campos son obligatorios');
       return;
@@ -58,18 +42,13 @@ function CargarTarea() {
       return;
     }
 
-    // Construir nombreProceso
     const nombreProceso = `${producto.nombreProducto}-${cantidad}`;
 
-    // DEFINICIÓN EXPLÍCITA DEL ESTADO DEL PRODUCTO (EVITA ERROR DE BACKEND)
-    const estadoProducto = 'pendiente';
-
-    // Objeto a enviar al backend
     const nuevoProceso = {
       idProducto: producto.idProducto,
       nombreProceso,
       cantidadProducto: parseInt(cantidad),
-      estadoProducto,
+      estadoProducto: 'pendiente',
       fechaEntrega
     };
 
@@ -84,8 +63,10 @@ function CargarTarea() {
       });
 
       if (res.ok) {
+        const creado = await res.json(); // <-- obtener el proceso creado del backend
+        // Notificar a otros componentes que se creó un proceso
+        window.dispatchEvent(new CustomEvent('procesoCreado', { detail: creado }));
         alert('Proceso creado exitosamente');
-        // Resetear formulario
         setProductoSeleccionado('');
         setCantidad('');
         setFechaEntrega('');
@@ -99,14 +80,12 @@ function CargarTarea() {
     }
   };
 
-  // Renderizado del formulario
   return (
     <Form onSubmit={handleSubmit} className="cargar-tarea-container">
       <div className="cargar-tarea-titulo-wrapper">
         <h5 className="monitoreo-titulo">Cargar Tarea</h5>
       </div>
 
-      {/* Primera fila: Producto + Cantidad */}
       <Row className="align-items-center cargar-tarea-row">
         <Col xs="6">
           <Form.Group controlId="formProducto" className="d-flex align-items-center">
@@ -119,11 +98,14 @@ function CargarTarea() {
             >
               <option value="">Selecciona un producto</option>
               {productos.map((prod) => (
-                <option key={prod.idProducto} value={prod.idProducto}>{prod.nombreProducto}</option>
+                <option key={prod.idProducto} value={prod.idProducto}>
+                  {prod.nombreProducto}
+                </option>
               ))}
             </Form.Select>
           </Form.Group>
         </Col>
+
         <Col xs="4">
           <Form.Group controlId="formCantidad" className="d-flex align-items-center">
             <Form.Label className="mb-0 me-2">Cantidad:</Form.Label>
@@ -139,7 +121,6 @@ function CargarTarea() {
         </Col>
       </Row>
 
-      {/* Segunda fila: Fecha de Entrega + Botón */}
       <Row className="align-items-center cargar-tarea-row mt-2">
         <Col xs="6">
           <Form.Group controlId="formFechaEntrega" className="d-flex align-items-center">
@@ -153,6 +134,7 @@ function CargarTarea() {
             />
           </Form.Group>
         </Col>
+
         <Col xs="2" className="d-flex align-items-end">
           <Button variant="primary" type="submit" className="cargar-tarea-boton">
             Cargar

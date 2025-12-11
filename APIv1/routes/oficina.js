@@ -127,8 +127,8 @@ JOIN tiposIncidencias ON incidencias.idTipoIncidencia = tiposIncidencias.idTipoI
 LEFT JOIN procesos ON incidencias.idProceso = procesos.idProceso
 LEFT JOIN productos ON procesos.idProducto = productos.idProducto
 WHERE
-  incidencias.vistaIncidencia = 1
-  OR (incidencias.vistaIncidencia = 1 AND incidencias.idProceso IS NULL);`);
+  incidencias.vistaIncidencia = 1 AND incidencias.resueltaIncidencia = 0
+  OR ((incidencias.vistaIncidencia = 1 AND incidencias.resueltaIncidencia = 0) AND incidencias.idProceso IS NULL);`);
   res.json(rows);
 });
 
@@ -136,7 +136,7 @@ app.post('/incidencias/:id/vista', async (req, res) => {
   const { id } = req.params;  // <-- así accedés al parámetro :id
   try {
     const [result] = await pool.query(
-      "UPDATE incidencias SET vistaIncidencia = 1 WHERE idIncidencia = ?",
+      "UPDATE incidencias SET resueltaIncidencia = 1 WHERE idIncidencia = ?",
       [id]
     );
 
@@ -222,11 +222,13 @@ app.post('/planos', verify_token, authorize_roles(3), async function (req, res) 
     try {
       const [empleados] = await pool.query(`
         SELECT 
-          idEmpleado, 
+          empleados.idEmpleado,usuarios.idRol,
           CONCAT(apellidoEmpleado, ' ', nombreEmpleado) AS nombreCompleto 
         FROM empleados
+        join usuarios on empleados.idEmpleado = usuarios.idEmpleado
+        where idRol = ?
         ORDER BY apellidoEmpleado, nombreEmpleado
-      `);
+      `, 4);
   
       res.json(empleados);
     } catch (error) {
@@ -282,7 +284,7 @@ app.post('/planos', verify_token, authorize_roles(3), async function (req, res) 
     if (!empleado || !desde || !hasta) {
       return res.status(400).json({ error: 'Faltan parámetros' });
     }
-  
+  console.log(empleado, desde, hasta);
     try {
       const [rows] = await pool.query(`
         SELECT *

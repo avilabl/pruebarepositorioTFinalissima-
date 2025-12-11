@@ -6,9 +6,10 @@ const Monitoreo = () => {
   const [expandidoId, setExpandidoId] = useState(null);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
     const fetchProcesos = async () => {
       try {
-        const token = localStorage.getItem("token");
         const response = await fetch("http://localhost:3000/oficina/procesos", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -24,7 +25,24 @@ const Monitoreo = () => {
       }
     };
 
+    // fetch inicial
     fetchProcesos();
+
+    // listener para cuando se cree un nuevo proceso
+    const onProcesoCreado = (e) => {
+      // opción A: volver a traer todos los procesos
+      fetchProcesos();
+
+      // opción B (alternativa, más rápida): insertar el proceso recibido arriba
+      // const nuevo = e.detail;
+      // setProcesos(prev => [nuevo, ...prev]);
+    };
+
+    window.addEventListener('procesoCreado', onProcesoCreado);
+
+    return () => {
+      window.removeEventListener('procesoCreado', onProcesoCreado);
+    };
   }, []);
 
   const toggleExpandir = (id) => {

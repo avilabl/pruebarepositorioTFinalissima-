@@ -41,6 +41,9 @@ const InformeProduccion = () => {
 
     try {
       const token = localStorage.getItem("token");
+      // Añadir hora al "hasta" para usar 23:59:59
+      const hastaConHora = `${hastaFecha}T23:59:59`;
+
       const response = await fetch("http://localhost:3000/oficina/informes", {
         method: "POST",
         headers: {
@@ -50,7 +53,7 @@ const InformeProduccion = () => {
         body: JSON.stringify({
           empleado: empleadoSeleccionado,
           desde: desdeFecha,
-          hasta: hastaFecha,
+          hasta: hastaConHora,
         }),
       });
 
@@ -114,8 +117,8 @@ const InformeProduccion = () => {
                   <td>{fila.apellidoEmpleado}</td>
                   <td>{fila.nombreEmpleado}</td>
                   <td>{fila.nombreProceso}</td>
-                  <td>{fila.fechaInicio ? new Date(fila.fechaInicio).toLocaleString() : 'Sin iniciar'}</td>
-                  <td>{fila.fechaFin ? new Date(fila.fechaFin).toLocaleString() : 'En curso'}</td>
+                  <td>{fila.fechaInicio ? new Date(fila.fechaInicio).toLocaleString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }) : 'Sin iniciar'}</td>
+                  <td>{fila.fechaFin ? new Date(fila.fechaFin).toLocaleString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }) : 'En curso'}</td>
                   <td>{fila.cantidadIncidencias}</td>
                   <td> {fila.descripcionesIncidenciasVistas
                       ? fila.descripcionesIncidenciasVistas.split(' || ').map((desc, i) => (

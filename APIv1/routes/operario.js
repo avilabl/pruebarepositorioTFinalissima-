@@ -74,9 +74,9 @@ app.post('/iniciartarea', verify_token, authorize_roles(4), async function (req,
         JOIN empleados ON empleados.idEmpleado = trabajos.idEmpleado
         JOIN usuarios ON usuarios.idEmpleado = empleados.idEmpleado
         SET procesos.estadoProducto = 'produccion',
-        procesos.fechaInicio = CURDATE()
-        WHERE usuarios.idUsuario = ?;
-      `,[idUsuario]);
+        procesos.fechaInicio = ?
+        WHERE usuarios.idUsuario = ? AND procesos.estadoProducto = 'asignado';
+      `,[new Date(),idUsuario]);
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -99,18 +99,18 @@ app.post('/finalizartarea', verify_token, authorize_roles(4), async function (re
       join puestos ON puestos.idPuesto = trabajos.idPuesto
       SET
         procesos.estadoProducto = 'terminado',
-        procesos.fechaFin = CURDATE(),
+        procesos.fechaFin = ?,
         puestos.disponible = 0
-      WHERE usuarios.idUsuario = ?;
-    `, [idUsuario]);
-
+      WHERE usuarios.idUsuario = ? AND procesos.estadoProducto = 'produccion';
+    `, [new Date(),idUsuario]);
+console.log(tiempoProduccion);
     await connection.query(`
       UPDATE trabajos
       JOIN empleados ON empleados.idEmpleado = trabajos.idEmpleado
       JOIN usuarios ON usuarios.idEmpleado = empleados.idEmpleado
       JOIN procesos ON procesos.idProceso = trabajos.idProceso
       SET
-        trabajos.tiempoProduccion = ?
+        trabajos.tiempoProduccion = SEC_TO_TIME(?)
       WHERE procesos.idProceso = ? AND usuarios.idUsuario = ?;
     `, [tiempoProduccion, idProceso, idUsuario]);
 
@@ -133,7 +133,7 @@ app.post('/finalizartarea', verify_token, authorize_roles(4), async function (re
   }
 });
 
-app.post('/incidencia', verify_token, authorize_roles(4), async function (req, res) {
+/*app.post('/incidencia', verify_token, authorize_roles(4), async function (req, res) {
 
   try {
     const { idProceso,descripcion,idTipoIncidencia } = req.body;
@@ -145,6 +145,38 @@ app.post('/incidencia', verify_token, authorize_roles(4), async function (req, r
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});*/
+app.post('/incidencia', verify_token, authorize_roles(4), async function (req, res) {
+  const connection = await pool.getConnection();
+  try {
+    console.log('Cuerpo de la solicitud incidencia:', req.body);
+    const { idUsuario,descripcion,idTipoIncidencia } = req.body;
+    await connection.beginTransaction();
+console.log('vos a hacer la consulta para idProceso con idUsuario:', idUsuario);
+    const [result] = await connection.query(`SELECT procesos.idProceso FROM procesos
+      JOIN trabajos ON trabajos.idProceso = procesos.idProceso
+      JOIN empleados ON empleados.idEmpleado = trabajos.idEmpleado
+      JOIN usuarios ON usuarios.idEmpleado = empleados.idEmpleado
+      WHERE usuarios.idUsuario = ? AND procesos.estadoProducto IN ('produccion', 'asignado');
+    `, [idUsuario]);
+    console.log('Proceso encontrado para incidencia:', result);
+    const proceso = parseInt(result[0].idProceso);
+    console.log('Proceso encontrado para incidencia:', proceso);
+    console.log('Descripcion:', descripcion);
+    console.log('idTipoIncidencia:', idTipoIncidencia);
+    //console.log('Fecha incidencia:', NOW());
+
+    await connection.query(`INSERT INTO incidencias
+      (idProceso, descripcion, idTipoIncidencia, fechaIncidencia, vistaIncidencia)
+      VALUES (?, ?, ?, ?, ?);
+      `,[proceso, descripcion, idTipoIncidencia, new Date(),'0']);
+console.log('Incidencia insertada correctamente');
+        await connection.commit();
+    res.json({ success: true });
+  } catch (err) {
+        await connection.rollback();
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.post('/logout', verify_token, authorize_roles(4), async function (req, res) {
@@ -154,8 +186,9 @@ app.post('/logout', verify_token, authorize_roles(4), async function (req, res) 
     const [rows] = await pool.query(`UPDATE trabajos
       JOIN empleados ON empleados.idEmpleado = trabajos.idEmpleado
       JOIN usuarios ON usuarios.idEmpleado = empleados.idEmpleado
+      join procesos ON procesos.idProceso = trabajos.idProceso
       set tiempoProduccion = ?
-    WHERE idUsuario = ?;
+    WHERE idUsuario = ? AND procesos.estadoProducto = 'produccion';
     `,[tiempoProduccion, idUsuario]);
     res.json(rows);
   } catch (err) {

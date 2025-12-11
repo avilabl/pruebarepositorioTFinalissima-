@@ -5,13 +5,24 @@ import { useNavigate } from 'react-router-dom';
 const Header = ({ setUser, tiempoProduccion }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user')); // Obtener usuario del localStorage
+console.log("usuario:",user)
+
+const roleLabel = (id) => {
+    switch (+id) {
+      case 1: return "Administrador";
+      case 2: return "Encargado";
+      case 3: return "Oficina Técnica";
+      case 4: return "Operario";
+      default: return "Usuario no identificado";
+    }
+  };
 
   const toggleDropdown = () => {
     setDropdownOpen((prev) => !prev);
   };
 
   const handleLogout = async () => {
-    const user = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');
 
     if (!user || !token) {
@@ -88,6 +99,13 @@ const Header = ({ setUser, tiempoProduccion }) => {
             <button onClick={handleLogout}>Cerrar sesión</button>
           </div>
         </div>
+        {/* Mostrar nombre y rol del usuario */}
+        {user && (
+          <div className="header-user-sub">
+            <div className="header-user-name">{user.nombreUsuario}</div>
+            <div className="header-user-role">{roleLabel(user.idRol)}</div>
+          </div>
+        )}
       </div>
     </header>
   );

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './IncidenciasOperario.css';
+import './IncidenciasModal.css'; // <-- agregar esta línea
 
 const IncidenciasOperario = ({
   incidence,
@@ -10,16 +11,18 @@ const IncidenciasOperario = ({
   selectedImage,
   showBuscarButton = false,
   onSuccess,
-  rol = 4, // 4 = operario (por defecto), 2 = encargado
-  idProceso // para encargado, debe venir por props
+  rol = 4,
+  idProceso
 }) => {
   const [incidenceTypes, setIncidenceTypes] = useState([]);
   const [planos, setPlanos] = useState([]);
-  const [internalIdProceso, setInternalIdProceso] = useState(1); // solo para operario
-
-  // Solo para encargado (cuando showBuscarButton es true)
+  const [internalIdProceso, setInternalIdProceso] = useState(1);
   const [productos, setProductos] = useState([]);
   const [nombreProductoSeleccionado, setNombreProductoSeleccionado] = useState('');
+  
+  // Estado para modal no bloqueante
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalType, setModalType] = useState(''); // 'success' o 'error'
 
   // Cargar tipos de incidencias
   useEffect(() => {
@@ -118,25 +121,64 @@ const IncidenciasOperario = ({
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          idProceso: proceso,
+          idUsuario: JSON.parse(localStorage.getItem('user')).idUsuario,
           descripcion: incidence,
           idTipoIncidencia: selected.idTipoIncidencia
         })
       });
       if (!res.ok) throw new Error('Error al cargar la incidencia');
-      alert('Incidencia cargada correctamente');
-      if (onSuccess) onSuccess();
+      
+      // Usar modal no bloqueante en lugar de alert
+      setModalMessage('Incidencia cargada correctamente');
+      setModalType('success');
+      
+      // Auto-cerrar después de 2 segundos
+      setTimeout(() => {
+        setModalMessage('');
+        if (onSuccess) onSuccess();
+      }, 10000);
+      
     } catch (err) {
-      alert('Error al cargar la incidencia');
+      setModalMessage('Error al cargar la incidencia');
+      setModalType('error');
       console.error(err);
+      
+      // Auto-cerrar después de 3 segundos
+      setTimeout(() => {
+        setModalMessage('');
+      }, 10000);
+    }
+  };
+
+  const closeModal = () => {
+    setModalMessage('');
+    // Reiniciar el componente limpiando estados
+    if (modalType === 'success') {
+      // Limpiar campos de incidencia
+      onChange({ target: { value: '' } }); // vaciar textarea
+      onTypeChange({ target: { value: '' } }); // vaciar select
+      //setNombreProductoSeleccionado(''); // vaciar selector producto
+      //setPlanos([]); // limpiar planos
+      
+      // Llamar onSuccess si existe (para que el padre también se reinicie)
+      if (onSuccess) onSuccess();
     }
   };
 
   return (
     <div className="product-info">
+      {/* Modal no bloqueante */}
+      {modalMessage && (
+        <div className={`modal-overlay ${modalType}`}>
+          <div className={`modal-content ${modalType}`}>
+            <p>{modalMessage}</p>
+            <button onClick={closeModal}>Cerrar</button>
+          </div>
+        </div>
+      )}
+
       <div className="product-plan">
         <h3>Planos de Productos</h3>
-        {/* Select solo para encargado */}
         {showBuscarButton && (
           <div className="selector-producto">
             <select
