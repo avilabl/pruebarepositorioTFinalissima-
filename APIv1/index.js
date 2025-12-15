@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
@@ -8,12 +9,9 @@ const oficinaRouter = require('./routes/oficina');
 const loginRouter = require('./routes/ingreso');
 
 const configContent = fs.readFileSync('config.json');
-const config = JSON.parse(configContent);
-const port = config.port || 3000;
-config.version = '2025.05.08-14.38';
-
-
-
+//const config = JSON.parse(configContent);
+const port = process.env.PORT || 3000;
+//config.version = '2025.05.08-14.38';
 const app = express();
 app.use(cors());
 app.use(express.json());
