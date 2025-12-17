@@ -42,5 +42,5 @@ app.get('/health/db', async (req, res) => {
   }
 });
 app.listen(port, () => {
-  console.log(`Servidor en Puerto ${port}`);
+  //console.log(`Servidor en Puerto ${port}`);
 });
