@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../Modal.css";
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 export default function CrearPuesto() {
     const [showModal, setShowModal] = useState(false);

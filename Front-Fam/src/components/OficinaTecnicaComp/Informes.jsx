@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Informes.css';
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 
 const InformeProduccion = () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import '../Modal.css'; // Asegúrate de que este path sea correcto si estás usando Modal.css o Modal2.css
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 function AltaPuesto() {
     const [puestos, setPuestos] = useState([]);

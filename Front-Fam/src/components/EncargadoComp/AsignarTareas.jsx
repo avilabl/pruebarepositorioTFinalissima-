@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './AsignarTareas.css';
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 const AsignarTareas = () => {
   const [tarea, setTarea] = useState('');

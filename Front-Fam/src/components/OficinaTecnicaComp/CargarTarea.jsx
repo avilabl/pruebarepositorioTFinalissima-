@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useProductoSeleccionado } from './contextProducto';
 import './CargarTarea.css';
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 function CargarTarea() {
   const { productos, setProductos } = useProductoSeleccionado();

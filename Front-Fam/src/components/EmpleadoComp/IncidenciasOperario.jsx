@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './IncidenciasOperario.css';
 import './IncidenciasModal.css'; // <-- agregar esta línea
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 const IncidenciasOperario = ({
   incidence,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './ListaProcesosPendientes.css';
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 const ListaProcesosPendientes = () => {
   const [procesosPendientes, setProcesosPendientes] = useState([]);

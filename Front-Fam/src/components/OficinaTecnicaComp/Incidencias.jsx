@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Incidencias.css";
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 const Incidencias = () => {
   const [incidencias, setIncidencias] = useState([]);

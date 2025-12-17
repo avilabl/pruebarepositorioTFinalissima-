@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Proceso.css'; 
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 
 function InformeProceso() {

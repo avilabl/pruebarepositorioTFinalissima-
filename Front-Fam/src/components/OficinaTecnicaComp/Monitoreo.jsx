@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Monitoreo.css";
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 const Monitoreo = () => {
   const [procesos, setProcesos] = useState([]);

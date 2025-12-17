@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import '../Modal.css';
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 // Usaremos un objeto para el estado del mensaje para gestionar el tipo (éxito/error)
 // { text: string, type: 'success' | 'error' | null }

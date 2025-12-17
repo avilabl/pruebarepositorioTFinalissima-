@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './ListaIncidenciasRecientes.css';
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 const ListaIncidenciasRecientes = () => {
   const [incidencias, setIncidencias] = useState([]);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './TareaOperario.css';
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 const TareaOperario = ({ taskStarted, onStart, onEnd, onTiempoFinalizado }) => {
   const [seconds, setSeconds] = useState(0);

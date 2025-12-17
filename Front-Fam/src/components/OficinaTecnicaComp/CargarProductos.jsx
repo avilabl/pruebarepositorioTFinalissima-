@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useProductoSeleccionado } from './contextProducto';
 import './CargarProductos.css';
 import Modal from '../Modal';
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 function CargarProductos() {
   const [modalAbierto, setModalAbierto] = useState(false);

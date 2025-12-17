@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../Modal.css';
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 const EmpleadoNuevo = () => {
     const [mostrarModal, setMostrarModal] = useState(false);

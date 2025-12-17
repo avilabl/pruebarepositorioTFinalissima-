@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './ArchivoProductos.css';
 import { useProductoSeleccionado } from './contextProducto';
 import Modal from '../Modal';
-import API_URL from '../services/api';
+import API_URL from '../../services/api';
 
 function ArchivoProductos() {
   const [archivoSeleccionadoIndex, setArchivoSeleccionadoIndex] = useState(null);
