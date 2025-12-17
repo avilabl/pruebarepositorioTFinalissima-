@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Header.css";
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../services/api';
 
 const Header = ({ setUser, tiempoProduccion }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -33,7 +34,7 @@ const roleLabel = (id) => {
     try {
       // Logout operario
       if (user.idRol === 4) {
-        const response = await fetch('http://localhost:3000/operario/logout', {
+        const response = await fetch(`${API_URL}/operario/logout`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -56,7 +57,7 @@ const roleLabel = (id) => {
 
       // Logout encargado
       if (user.idRol === 2) {
-        const response = await fetch('http://localhost:3000/encargado/logout', {
+        const response = await fetch(`${API_URL}/encargado/logout`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,

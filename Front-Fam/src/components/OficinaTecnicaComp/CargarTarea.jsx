@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useProductoSeleccionado } from './contextProducto';
 import './CargarTarea.css';
+import API_URL from '../services/api';
 
 function CargarTarea() {
   const { productos, setProductos } = useProductoSeleccionado();
@@ -12,7 +13,7 @@ function CargarTarea() {
   const token = localStorage.getItem('token');
 
   useEffect(() => {
-    fetch("http://localhost:3000/oficina/producto", {
+    fetch(`${API_URL}/oficina/producto`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -53,7 +54,7 @@ function CargarTarea() {
     };
 
     try {
-      const res = await fetch("http://localhost:3000/oficina/proceso", {
+      const res = await fetch(`${API_URL}/oficina/proceso`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

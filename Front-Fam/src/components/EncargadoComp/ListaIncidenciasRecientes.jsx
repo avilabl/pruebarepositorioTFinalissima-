@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './ListaIncidenciasRecientes.css';
+import API_URL from '../services/api';
 
 const ListaIncidenciasRecientes = () => {
   const [incidencias, setIncidencias] = useState([]);
@@ -17,7 +18,7 @@ const ListaIncidenciasRecientes = () => {
     }
 
     try {
-      const respuesta = await fetch("http://localhost:3000/encargado/incidencias", {
+      const respuesta = await fetch(`${API_URL}/encargado/incidencias`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -71,7 +72,7 @@ const ListaIncidenciasRecientes = () => {
   const handleDescartar = async () => {
     const token = localStorage.getItem("token");
     try {
-      await fetch(`http://localhost:3000/encargado/incidencias/${incidenciaSeleccionada.id}`, {
+      await fetch(`${API_URL}/encargado/incidencias/${incidenciaSeleccionada.id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -87,7 +88,7 @@ const ListaIncidenciasRecientes = () => {
   const handleGuardar = async () => {
     const token = localStorage.getItem("token");
     try {
-      await fetch(`http://localhost:3000/encargado/incidencias/${incidenciaSeleccionada.id}`, {
+      await fetch(`${API_URL}/encargado/incidencias/${incidenciaSeleccionada.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

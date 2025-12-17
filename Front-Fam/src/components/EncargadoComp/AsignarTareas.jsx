@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './AsignarTareas.css';
+import API_URL from '../services/api';
 
 const AsignarTareas = () => {
   const [tarea, setTarea] = useState('');
@@ -15,7 +16,7 @@ const AsignarTareas = () => {
 
   const fetchTareas = async () => {
     try {
-      const res = await fetch('http://localhost:3000/encargado/tareas', {
+      const res = await fetch(`${API_URL}/encargado/tareas`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -31,7 +32,7 @@ const AsignarTareas = () => {
 
   const fetchPuestos = async () => {
     try {
-      const res = await fetch('http://localhost:3000/encargado/puestos', {
+      const res = await fetch(`${API_URL}/encargado/puestos`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -46,7 +47,7 @@ const AsignarTareas = () => {
 
   const fetchEmpleados = async () => {
     try {
-      const res = await fetch('http://localhost:3000/encargado/empleados', {
+      const res = await fetch(`${API_URL}/encargado/empleados`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -88,7 +89,7 @@ const AsignarTareas = () => {
   const token = localStorage.getItem('token');
 
   try {
-    const response = await fetch('http://localhost:3000/encargado/asignar', {
+    const response = await fetch(`${API_URL}/encargado/asignar`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Incidencias.css";
+import API_URL from '../services/api';
 
 const Incidencias = () => {
   const [incidencias, setIncidencias] = useState([]);
@@ -9,7 +10,7 @@ const Incidencias = () => {
     const fetchIncidencias = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:3000/oficina/incidencias/nuevas", {
+        const response = await fetch(`${API_URL}/oficina/incidencias/nuevas`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -45,7 +46,7 @@ const Incidencias = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/oficina/incidencias/${incidencia.idIncidencia}/vista`,
+        `${API_URL}/oficina/incidencias/${incidencia.idIncidencia}/vista`,
         {
           method: "POST",
           headers: {

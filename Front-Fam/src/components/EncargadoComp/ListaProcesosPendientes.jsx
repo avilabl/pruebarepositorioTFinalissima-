@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './ListaProcesosPendientes.css';
+import API_URL from '../services/api';
 
 const ListaProcesosPendientes = () => {
   const [procesosPendientes, setProcesosPendientes] = useState([]);
@@ -9,7 +10,7 @@ const ListaProcesosPendientes = () => {
     const fetchProcesos = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:3000/encargado/pendientes', {
+        const response = await fetch(`${API_URL}/encargado/pendientes`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },

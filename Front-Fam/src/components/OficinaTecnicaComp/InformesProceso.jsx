@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Proceso.css'; 
+import API_URL from '../services/api';
 
 
 function InformeProceso() {
@@ -21,7 +22,7 @@ function InformeProceso() {
 
     setCargando(true);
 
-    fetch('http://localhost:3000/oficina/informes/proceso', {
+    fetch(`${API_URL}/oficina/informes/proceso`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

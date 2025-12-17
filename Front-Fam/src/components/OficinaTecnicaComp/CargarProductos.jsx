@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useProductoSeleccionado } from './contextProducto';
 import './CargarProductos.css';
 import Modal from '../Modal';
+import API_URL from '../services/api';
 
 function CargarProductos() {
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -21,7 +22,7 @@ function CargarProductos() {
   } = useProductoSeleccionado();
 
   useEffect(() => {
-    fetch('http://localhost:3000/oficina/producto', {
+    fetch(`${API_URL}/oficina/producto`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -71,7 +72,7 @@ function CargarProductos() {
         return;
       }
 
-      fetch('http://localhost:3000/oficina/productos', {
+      fetch(`${API_URL}/oficina/productos`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

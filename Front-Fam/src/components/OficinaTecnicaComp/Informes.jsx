@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Informes.css';
+import API_URL from '../services/api';
 
 
 const InformeProduccion = () => {
@@ -13,7 +14,7 @@ const InformeProduccion = () => {
   const obtenerEmpleados = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:3000/oficina/empleados", {
+      const response = await fetch(`${API_URL}/oficina/empleados`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -44,7 +45,7 @@ const InformeProduccion = () => {
       // Añadir hora al "hasta" para usar 23:59:59
       const hastaConHora = `${hastaFecha}T23:59:59`;
 
-      const response = await fetch("http://localhost:3000/oficina/informes", {
+      const response = await fetch(`${API_URL}/oficina/informes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

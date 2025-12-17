@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './IncidenciasOperario.css';
 import './IncidenciasModal.css'; // <-- agregar esta línea
+import API_URL from '../services/api';
 
 const IncidenciasOperario = ({
   incidence,
@@ -32,9 +33,9 @@ const IncidenciasOperario = ({
         if (!token) return;
         let url;
         if (rol === 2) {
-          url = 'http://localhost:3000/encargado/tipoincidencias';
+          url = `${API_URL}/encargado/tipoincidencias`;
         } else {
-          url = 'http://localhost:3000/operario/tipoincidencias';
+          url = `${API_URL}/operario/tipoincidencias`;
         }
         const response = await fetch(url, {
           headers: {
@@ -59,7 +60,7 @@ const IncidenciasOperario = ({
       const token = localStorage.getItem('token');
       if (!token) return;
       try {
-        const response = await fetch('http://localhost:3000/encargado/productos', {
+        const response = await fetch(`${API_URL}/encargado/productos`, {
           headers: { 'Authorization': 'Bearer ' + token }
         });
         if (!response.ok) throw new Error('Error al obtener productos');
@@ -79,7 +80,7 @@ const IncidenciasOperario = ({
       if (!token) return;
       if (showBuscarButton && nombreProductoSeleccionado) {
         // Encargado: fetch de planos según producto seleccionado
-        const response = await fetch('http://localhost:3000/encargado/producto/' + nombreProductoSeleccionado, {
+        const response = await fetch(`${API_URL}/encargado/producto/${nombreProductoSeleccionado}`, {
           headers: { 'Authorization': 'Bearer ' + token }
         });
         if (!response.ok) return;
@@ -89,7 +90,7 @@ const IncidenciasOperario = ({
         // Operario: igual que antes
         const user = JSON.parse(localStorage.getItem('user'));
         if (!user) return;
-        const response = await fetch('http://localhost:3000/operario/producto/' + user.idUsuario, {
+        const response = await fetch(`${API_URL}/operario/producto/${user.idUsuario}`, {
           headers: { 'Authorization': 'Bearer ' + token }
         });
         if (!response.ok) return;
@@ -110,9 +111,9 @@ const IncidenciasOperario = ({
       const proceso = rol === 2 ? idProceso : internalIdProceso;
       let url;
       if (rol === 2) {
-        url = 'http://localhost:3000/encargado/incidencia';
+        url = `${API_URL}/encargado/incidencia`;
       } else {
-        url = 'http://localhost:3000/operario/incidencia';
+        url = `${API_URL}/operario/incidencia`;
       }
       const res = await fetch(url, {
         method: 'POST',

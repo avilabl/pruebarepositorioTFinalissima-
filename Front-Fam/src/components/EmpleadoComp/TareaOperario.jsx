@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './TareaOperario.css';
+import API_URL from '../services/api';
 
 const TareaOperario = ({ taskStarted, onStart, onEnd, onTiempoFinalizado }) => {
   const [seconds, setSeconds] = useState(0);
@@ -18,7 +19,7 @@ const TareaOperario = ({ taskStarted, onStart, onEnd, onTiempoFinalizado }) => {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/operario/inicio/${user.idUsuario}`, {
+      const response = await fetch(`${API_URL}/operario/inicio/${user.idUsuario}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -115,7 +116,7 @@ console.log('cantidad:', tareaPendiente?.cantidadProducto)
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/operario/iniciartarea`, {
+      const response = await fetch(`${API_URL}/operario/iniciartarea`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -147,7 +148,7 @@ console.log('idproceso:', tareaPendiente?.idProceso);
     }
 console.log('Finalizando tarea con segundos:', tareaPendiente, seconds);
     try {
-      const response = await fetch(`http://localhost:3000/operario/finalizartarea`, {
+      const response = await fetch(`${API_URL}/operario/finalizartarea`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

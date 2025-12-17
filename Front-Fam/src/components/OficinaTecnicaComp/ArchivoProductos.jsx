@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './ArchivoProductos.css';
 import { useProductoSeleccionado } from './contextProducto';
 import Modal from '../Modal';
+import API_URL from '../services/api';
 
 function ArchivoProductos() {
   const [archivoSeleccionadoIndex, setArchivoSeleccionadoIndex] = useState(null);
@@ -23,7 +24,7 @@ function ArchivoProductos() {
 
   useEffect(() => {
     if (productoSeleccionado) {
-      fetch(`http://localhost:3000/oficina/planos/${productoSeleccionado.idProducto}`, {
+      fetch(`${API_URL}/oficina/planos/${productoSeleccionado.idProducto}`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -65,7 +66,7 @@ function ArchivoProductos() {
       return;
     }
 
-    fetch('http://localhost:3000/oficina/planos', {
+    fetch(`${API_URL}/oficina/planos`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -92,7 +93,7 @@ function ArchivoProductos() {
   };
 
   const eliminarArchivo = (idProducto, archivo) => {
-    fetch(`http://localhost:3000/oficina/planos/${archivo.idPlano}`, {
+    fetch(`${API_URL}/oficina/planos/${archivo.idPlano}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,

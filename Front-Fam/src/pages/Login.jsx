@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { Button, Card, Col, Form, FormGroup, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
 import '../components/Login.css';
+import API_URL from '../services/api';
 
 function Login({ onLogin }) {
   const [nombreUsuario, setNombreUsuario] = useState('');
@@ -30,7 +31,7 @@ function Login({ onLogin }) {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/ingreso/login', {
+      const response = await fetch(`${API_URL}/ingreso/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombreUsuario, pass })

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Monitoreo.css";
+import API_URL from '../services/api';
 
 const Monitoreo = () => {
   const [procesos, setProcesos] = useState([]);
@@ -10,7 +11,7 @@ const Monitoreo = () => {
 
     const fetchProcesos = async () => {
       try {
-        const response = await fetch("http://localhost:3000/oficina/procesos", {
+        const response = await fetch(`${API_URL}/oficina/procesos`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
