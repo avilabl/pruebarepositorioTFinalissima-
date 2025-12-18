@@ -200,7 +200,16 @@ console.log('Finalizando tarea con segundos:', tareaPendiente, seconds);
         </div>
 
         <div className="implemento-info">
-          {tareaPendiente ? tareaPendiente.nombreProducto : ''}
+          {tareaPendiente 
+            ? (
+            <>
+          {tareaPendiente.nombreProducto}
+          <br /> 
+          Cant: {tareaPendiente.cantidadProducto}
+          </>
+          ) 
+          : '' 
+          }
         </div>
 
         <div className="timer-estimado">
