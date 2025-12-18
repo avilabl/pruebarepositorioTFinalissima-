@@ -11,7 +11,7 @@ const loginRouter = require('./routes/ingreso');
 
 //const configContent = fs.readFileSync('config.json');
 //const config = JSON.parse(configContent);
-const port = process.env.DB_PORT || 3000;
+const port = process.env.PORT || 3000;
 //config.version = '2025.05.08-14.38';
 const app = express();
 app.use(cors());
